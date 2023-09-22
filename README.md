@@ -8,7 +8,7 @@
 
 ## Fork Checklist
 
-- [ ] Write the main to-dos for the fork
+- [X] Write the main to-dos for the fork
 - [ ] Explicitly state the video's GUID in verbose logs for ease of debugging/removing videos from the list
 - [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
   - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
