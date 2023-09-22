@@ -62,11 +62,23 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
 
     const apiClient: ApiClient = ApiClient.getInstance(session);
 
+    logger.verbose('Fetching video metadata')
+
     /* TODO: change this to a single guid at a time to ease our footprint on the
     MSS servers or we get throttled after 10 sequential reqs */
     for (const guid of videoGuids) {
-        const response: AxiosResponse<any> | undefined =
-            await apiClient.callApi('videos/' + guid + '?$expand=creator', 'get');
+        logger.verbose(`Try to get metadata for video ${guid}`)
+
+        let response: AxiosResponse<any> | undefined
+
+        try {
+            response = await apiClient.callApi('videos/' + guid + '?$expand=creator', 'get');
+        } catch (err) {
+            logger.error(`Error getting metadata for video ${guid}; Response returned ${err.response.status}: ${err.response.statusText}`)
+            continue;
+        }
+
+        logger.verbose(`Successfully retrieved metadata for video ${guid}`)
 
         title = sanitizeWindowsName(response?.data['name']);
 
