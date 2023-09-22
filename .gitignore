@@ -10,3 +10,5 @@ videos
 release
 build
 yarn.lock
+
+run-destreamer.ps1
