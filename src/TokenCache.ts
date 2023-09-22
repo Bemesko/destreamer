@@ -57,27 +57,27 @@ export class TokenCache {
 export async function refreshSession(url: string): Promise<Session> {
     const videoId: string = url.split('/').pop() ?? process.exit(ERROR_CODE.INVALID_VIDEO_GUID);
 
-    const browser: puppeteer.Browser = await puppeteer.launch({
-        executablePath: getPuppeteerChromiumPath(),
-        headless: false,            // NEVER TRUE OR IT DOES NOT WORK
-        userDataDir: chromeCacheFolder,
-        args: [
-            '--disable-dev-shm-usage',
-            '--fast-start',
-            '--no-sandbox'
-        ]
-    });
-
-    const page: puppeteer.Page = (await browser.pages())[0];
-    await page.goto(url, { waitUntil: 'load' });
-
-    await browser.waitForTarget((target: puppeteer.Target) => target.url().includes(videoId), { timeout: 30000 });
-
     let session: Session | null = null;
     let tries = 1;
 
     while (!session) {
+        const browser: puppeteer.Browser = await puppeteer.launch({
+            executablePath: getPuppeteerChromiumPath(),
+            headless: false,            // NEVER TRUE OR IT DOES NOT WORK
+            userDataDir: chromeCacheFolder,
+            args: [
+                '--disable-dev-shm-usage',
+                '--fast-start',
+                '--no-sandbox'
+            ]
+        });
+
+        const page: puppeteer.Page = (await browser.pages())[0];
+        await page.goto(url, { waitUntil: 'load' });
         try {
+
+            await browser.waitForTarget((target: puppeteer.Target) => target.url().includes(videoId), { timeout: 30000 });
+
             let sessionInfo: any;
             session = await page.evaluate(
                 () => {
@@ -91,15 +91,17 @@ export async function refreshSession(url: string): Promise<Session> {
         }
         catch (error) {
             if (tries > 5) {
-                process.exit(ERROR_CODE.NO_SESSION_INFO);
+                logger.error(ERROR_CODE.NO_SESSION_INFO);
             }
 
             session = null;
             tries++;
-            await page.waitFor(3000);
+            await page.waitForTimeout(3000);
+        }
+        finally {
+            browser.close();
         }
     }
-    browser.close();
 
     return session;
 }

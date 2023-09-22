@@ -144,14 +144,22 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
 
     for (const [index, video] of videos.entries()) {
 
+        logger.verbose(`Downloading video ${index + 1}`);
+
         if (argv.skip && fs.existsSync(video.outPath)) {
             logger.info(`File already exists, skipping: ${video.outPath}`);
             continue;
         }
 
-        if (argv.keepLoginCookies && index !== 0) {
+        // try to refresh token every 10 videos
+        if (argv.keepLoginCookies && index % 10 === 0) {
             logger.info('Trying to refresh token...');
-            session = await refreshSession('https://web.microsoftstream.com/video/' + videoGUIDs[index]);
+
+            try {
+                session = await refreshSession('https://web.microsoftstream.com/video/' + videoGUIDs[index]);
+            } catch (err) {
+                logger.error(err);
+            }
             ApiClient.getInstance().setSession(session);
         }
 
