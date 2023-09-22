@@ -1,40 +1,18 @@
-<a href="https://github.com/snobu/destreamer/actions">
-  <img src="https://github.com/snobu/destreamer/workflows/Node%20CI/badge.svg" alt="CI build status" />
-</a>
+# Bemesko's fork of Destreamer
 
-**destreamer v3.0** is just around the corner. You can try out a pre-release today by cloning [this branch](https://github.com/snobu/destreamer/tree/aria2c_forRealNow).
+- This fork is motivated by the [Official Retirement of Microsoft Stream (Classic)](https://learn.microsoft.com/en-us/stream/streamnew/stream-classic-to-new-migration-overview)
+- Some of my customers need to download loads of videos from Stream that the official Microsoft Migrator tool wasn't able to migrate
+- The original Destreamer isn't resilient enough to handle downloading too many videos at once
+- If you are a maintainer of the original repository please reach out so I can merge my changes upstream
+- If you want to learn more about destreamer please check out the original repository at [snobu/destreamer](https://github.com/snobu/destreamer)
 
-![destreamer](assets/logo.png)
+## Refactoring Checklist
 
-_(Alternative artwork proposals are welcome! Submit one through an Issue.)_
+- [ ] Write the main to-dos for the fork
 
-# Saves Microsoft Stream videos for offline enjoyment
+---
 
-### v2 Release, codename _Hammer of Dawn<sup>TM</sup>_
-
-This release would not have been possible without the code and time contributed by two distinguished developers: [@lukaarma](https://github.com/lukaarma) and [@kylon](https://github.com/kylon). Thank you!
-
-### Specialized versions
-
-- [Politecnico di Milano][polimi]: fork over at https://github.com/SamanFekri/destreamer
-- [Università di Pisa][unipi]: fork over at https://github.com/Guray00/destreamer-unipi
-- [Università della Calabria][unical]: fork over at https://github.com/peppelongo96/UnicalDown
-- [Università degli Studi di Parma][unipr]: fork over at https://github.com/vRuslan/destreamer-unipr
-
-## What's new
-### v2.2
-
-- Added title template
-
-### v2.1
-
-- Major code refactoring (all credits to @lukaarma)
-- Destreamer is now able to refresh the session's access token. Use this with `-k` (keep cookies) and tick "Remember Me" on login.
-- We added support for closed captions (see `--closedCaptions` below)
-
-## Disclaimer
-
-Hopefully this doesn't break the end user agreement for Microsoft Stream. Since we're simply saving the HLS stream to disk as if we were a browser, this does not abuse the streaming endpoints. However i take no responsibility if either Microsoft or your Office 365 admins request a chat with you in a small white room.
+Below is all of the information from the original README that still may apply to this fork:
 
 ## Prereqs
 
@@ -69,6 +47,7 @@ const browser: puppeteer.Browser = await puppeteer.launch({
 Navigate to `chrome://version` in the browser you want to plug in and copy executable path from there. Use double backslash for Windows.
 
 Now, change `executablePath` to reflect the path to your browser and profile (i.e. to use Microsoft Edge on Windows):
+
 ```typescript
         executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
 ```
@@ -82,15 +61,15 @@ Remember to rebuild (`npm run build`) every time you change this configuration.
 To build destreamer clone this repository, install dependencies and run the build script -
 
 ```sh
-$ git clone https://github.com/snobu/destreamer
-$ cd destreamer
-$ npm install
-$ npm run build
+git clone https://github.com/snobu/destreamer
+cd destreamer
+npm install
+npm run build
 ```
 
 ## Usage
 
-```
+```sh
 $ ./destreamer.sh
 
 Options:
@@ -124,7 +103,7 @@ Options:
   --skip                  Skip download if file already exists.                               [boolean] [default: false]
 ```
 
-- both --videoUrls and --inputFile also accept Microsoft Teams Groups url so if your Organization placed the videos you are interested in a group you can copy the link and Destreamer will download all the videos it can inside it! A group url looks like this https://web.microsoftstream.com/group/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+- both --videoUrls and --inputFile also accept Microsoft Teams Groups url so if your Organization placed the videos you are interested in a group you can copy the link and Destreamer will download all the videos it can inside it! A group url looks like this <https://web.microsoftstream.com/group/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX>
 
 - Passing `--username` is optional. It's there to make logging in faster (the username field will be populated automatically on the login form).
 
@@ -133,42 +112,51 @@ Options:
 - We default to `.mkv` for the output container. If you prefer something else (like `mp4`), pass `--format mp4`.
 
 Download a video -
+
 ```sh
-$ ./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1"
+./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1"
 ```
 
 Download a video and re-encode with HEVC (libx265) -
+
 ```sh
-$ ./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" --vcodec libx265
+./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" --vcodec libx265
 ```
 
 Download a video and speed up the interactive login by automagically filling in the username -
+
 ```sh
-$ ./destreamer.sh -u user@example.com -i "https://web.microsoftstream.com/video/VIDEO-1"
+./destreamer.sh -u user@example.com -i "https://web.microsoftstream.com/video/VIDEO-1"
 ```
 
 Download a video to a custom path -
+
 ```sh
-$ ./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" -o /Users/hacker/Downloads
+./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" -o /Users/hacker/Downloads
 ```
 
 Download two or more videos -
+
 ```sh
-$ ./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" \
+./destreamer.sh -i "https://web.microsoftstream.com/video/VIDEO-1" \
                      "https://web.microsoftstream.com/video/VIDEO-2"
 ```
 
 Download many videos but read URLs from a file -
+
 ```sh
-$ ./destreamer.sh -f list.txt
+./destreamer.sh -f list.txt
 ```
+
 ### Input file
+
 You can create a `.txt` file containing your video URLs, one video per line. The text file can have any name, followed by the `.txt` extension.
 Additionally you can have destreamer download each video in the input list to a separate directory.
 These optional lines must start with white space(s).
 
 Usage -
-```
+
+```text
 https://web.microsoftstream.com/video/xxxxxxxx-aaaa-xxxx-xxxx-xxxxxxxxxxxx
  -dir="videos/lessons/week1"
 https://web.microsoftstream.com/video/xxxxxxxx-aaaa-xxxx-xxxx-xxxxxxxxxxxx
@@ -176,6 +164,7 @@ https://web.microsoftstream.com/video/xxxxxxxx-aaaa-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 ### Title template
+
 The `-t` option allows user to specify a custom filename for the videos.
 
 You can use one or more of the following magic sequence which will get substituted at runtime. The magic sequence must be surrounded by curly brackets like this: `{title} {publishDate}`
@@ -186,10 +175,11 @@ You can use one or more of the following magic sequence which will get substitut
 - `publishTime`: The time the video was published in HH:MM:SS format
 - `author`: Name of video publisher
 - `authorEmail`: E-mail of video publisher
-- `uniqueId`: An _unique-enough_ ID generated from the video metadata
+- `uniqueId`: An *unique-enough* ID generated from the video metadata
 
 Examples -
-```
+
+```sh
 Input:
     -t 'This is an example'
 
@@ -224,26 +214,23 @@ By default, downloads are saved under project root `Destreamer/videos/` ( Not th
 ## KNOWN BUGS
 
 If you get a
-```
+
+```sh
 [FATAL ERROR] Unknown error: exit code 4
-````
+```
+
 when running destreamer, then make sure you're running a recent (post year 2019), stable version of **ffmpeg**.
 
 ## Contributing
 
-Contributions are welcome. Open an issue first before sending in a pull request. All pull requests require at least one code review before they are merged to master.
+See: [Contributing at snobu/destreamer](https://github.com/snobu/destreamer#contributing)
 
 ## Found a bug?
 
-Please open an [issue](https://github.com/snobu/destreamer/issues) and we'll look into it.
-
+Please open an [issue](https://github.com/snobu/destreamer/issues) in the original repository, unless it's specific to the changes I'm making in this fork.
 
 [ffmpeg]: https://www.ffmpeg.org/download.html
 [xming]: https://sourceforge.net/projects/xming/
 [node]: https://nodejs.org/en/download/
 [git]: https://git-scm.com/downloads
 [wsl]: https://github.com/snobu/destreamer/issues/90#issuecomment-619377950
-[polimi]: https://www.polimi.it
-[unipi]: https://www.unipi.it/
-[unical]: https://www.unical.it/portale/
-[unipr]: https://www.unipr.it/
