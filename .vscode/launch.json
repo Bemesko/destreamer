@@ -4,10 +4,38 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "node",
-            "runtimeArgs": ["--max-http-header-size", "32768"],
+            "runtimeArgs": [
+                "--max-http-header-size",
+                "32768"
+            ],
+            "request": "launch",
+            "name": "Debug with args",
+            "program": "${workspaceFolder}/src/destreamer.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js",
+                "!**/node_modules/**"
+            ],
+            "outputCapture": "std",
+            "args": [
+                "--inputFile",
+                "video-urls.txt",
+                "--keepLoginCookies",
+                "--noExperiments",
+                "--verbose",
+                "--format",
+                "mp4",
+                "--skip",
+            ]
+        },
+        {
+            "type": "node",
+            "runtimeArgs": [
+                "--max-http-header-size",
+                "32768"
+            ],
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/build/src/destreamer.js",

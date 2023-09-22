@@ -6,7 +6,7 @@ import { getPuppeteerChromiumPath } from './PuppeteerHelper';
 import { drawThumbnail } from './Thumbnail';
 import { TokenCache, refreshSession } from './TokenCache';
 import { Video, Session } from './Types';
-import { checkRequirements, ffmpegTimemarkToChunk, parseInputFile, parseCLIinput} from './Utils';
+import { checkRequirements, ffmpegTimemarkToChunk, parseInputFile, parseCLIinput } from './Utils';
 import { getVideoInfo, createUniquePath } from './VideoUtils';
 
 import cliProgress from 'cli-progress';
@@ -65,7 +65,7 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
 
     try {
         if (username) {
-            await page.waitForSelector('input[type="email"]', {timeout: 3000});
+            await page.waitForSelector('input[type="email"]', { timeout: 3000 });
             await page.keyboard.type(username);
             await page.click('input[type="submit"]');
         }
@@ -123,10 +123,10 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
 async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array<string>, session: Session): Promise<void> {
 
     logger.info('Fetching videos info... \n');
-    const videos: Array<Video> = createUniquePath (
+    const videos: Array<Video> = createUniquePath(
         await getVideoInfo(videoGUIDs, session, argv.closedCaptions),
         outputDirectories, argv.outputTemplate, argv.format, argv.skip
-        );
+    );
 
     if (argv.simulate) {
         videos.forEach((video: Video) => {
@@ -167,10 +167,10 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
 
         logger.info(`\nDownloading Video: ${video.title} \n`);
         logger.verbose('Extra video info \n' +
-        '\t Video m3u8 playlist URL: '.cyan + video.playbackUrl + '\n' +
-        '\t Video tumbnail URL: '.cyan + video.posterImageUrl + '\n' +
-        '\t Video subtitle URL (may not exist): '.cyan + video.captionsUrl + '\n' +
-        '\t Video total chunks: '.cyan + video.totalChunks + '\n');
+            '\t Video m3u8 playlist URL: '.cyan + video.playbackUrl + '\n' +
+            '\t Video tumbnail URL: '.cyan + video.posterImageUrl + '\n' +
+            '\t Video subtitle URL (may not exist): '.cyan + video.captionsUrl + '\n' +
+            '\t Video total chunks: '.cyan + video.totalChunks + '\n');
 
         logger.info('Spawning ffmpeg with access token and HLS URL. This may take a few seconds...\n\n');
         if (!process.stdout.columns) {
@@ -203,9 +203,9 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
         const cleanupFn: () => void = () => {
             pbar.stop();
 
-           if (argv.noCleanup) {
-               return;
-           }
+            if (argv.noCleanup) {
+                return;
+            }
 
             try {
                 fs.unlinkSync(video.outPath);
@@ -284,11 +284,11 @@ async function main(): Promise<void> {
 
     if (argv.videoUrls) {
         logger.info('Parsing video/group urls');
-        [videoGUIDs, outDirs] =  await parseCLIinput(argv.videoUrls as Array<string>, argv.outputDirectory, session);
+        [videoGUIDs, outDirs] = await parseCLIinput(argv.videoUrls as Array<string>, argv.outputDirectory, session);
     }
     else {
         logger.info('Parsing input file');
-        [videoGUIDs, outDirs] =  await parseInputFile(argv.inputFile!, argv.outputDirectory, session);
+        [videoGUIDs, outDirs] = await parseInputFile(argv.inputFile!, argv.outputDirectory, session);
     }
 
     logger.verbose('List of GUIDs and corresponding output directory \n' +
