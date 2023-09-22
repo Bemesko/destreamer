@@ -6,9 +6,28 @@
 - If you are a maintainer of the original repository please reach out so I can merge my changes upstream
 - If you want to learn more about destreamer please check out the original repository at [snobu/destreamer](https://github.com/snobu/destreamer)
 
-## Refactoring Checklist
+## Fork Checklist
 
 - [ ] Write the main to-dos for the fork
+- [ ] Explicitly state the video's GUID in verbose logs for ease of debugging/removing videos from the list
+- [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
+  - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
+  - [ ] If fetching metadata fails, log the full video GUID
+  - [ ] Implement retries for all actions involving external systems (Stream and/or FFMPEG)
+- [ ] Create a structured (csv) log file to report the status of all video downloads
+  - This is useful for my specific use case that involves tracking all videos that are being backed up
+  - [ ] Store the full GUIDs for each videos (new field `originalGuid` or something)
+  - [ ] Possible statuses:
+    - [ ] Already exists
+    - [ ] Downloaded successfully
+    - [ ] Download failed
+      - [ ] Video doesn't exist
+      - [ ] Not enough permissions to get video
+      - [ ] Video was migrated to Sharepoint (and redirects when trying to download from Stream)
+- [ ] Make a Dockerfile with this tool so I don't need to worry about my environments anymore
+- [ ] (Good to Have) Include current time in logs
+- [ ] (Good to Have) Persist video metadata so we don't have to wait for it to be fetched each time (this becomes really annoying when working with 100+ videos)
+- [ ] (Good to Have) Skip downloading metadata for already downloaded videos
 
 ---
 
