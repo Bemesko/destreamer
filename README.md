@@ -9,6 +9,7 @@
 ## Fork Checklist
 
 - [X] Write the main to-dos for the fork
+- [X] Replace non catastrophic exceptions with warnings
 - [ ] Explicitly state the video's GUID in verbose logs for ease of debugging/removing videos from the list
 - [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
   - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
@@ -25,7 +26,7 @@
       - [ ] Not enough permissions to get video
       - [ ] Video was migrated to Sharepoint (and redirects when trying to download from Stream)
 - [ ] Make a Dockerfile with this tool so I don't need to worry about my environments anymore
-- [ ] (Good to Have) Include current time in logs
+- [X] (Good to Have) Include current time in logs
 - [ ] (Good to Have) Persist video metadata so we don't have to wait for it to be fetched each time (this becomes really annoying when working with 100+ videos)
 - [ ] (Good to Have) Skip downloading metadata for already downloaded videos
 

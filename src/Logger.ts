@@ -1,4 +1,4 @@
-import colors from 'colors';
+import colors, { Color } from 'colors';
 import winston from 'winston';
 
 
@@ -18,23 +18,24 @@ export const logger: winston.Logger = winston.createLogger({
 });
 
 
-function customPrint (info: winston.Logform.TransformableInfo): string {
-    if (info.level === 'error') {
-        if (info.fatal) {
-            return colors.red('\n\n[FATAL ERROR] ') + (info.stack ?? info.message);
-        }
+function customPrint(info: winston.Logform.TransformableInfo): string {
+    let color: Color
 
-        return colors.red('\n[ERROR] ') + (info.stack ?? info.message) + '\n';
+    if (info.level === 'fatal') {
+        color = colors.bgRed
+    }
+    else if (info.level === 'error') {
+        color = colors.red
     }
     else if (info.level === 'warn') {
-        return colors.yellow('\n[WARNING] ') + info.message;
-    }
-    else if (info.level === 'info') {
-        return info.message;
+        color = colors.yellow
     }
     else if (info.level === 'verbose') {
-        return colors.cyan('\n[VERBOSE] ') + info.message;
+        color = colors.cyan
+    }
+    else {
+        color = colors.white
     }
 
-    return `${info.level}: ${info.message} - ${info.timestamp}`;
+    return color(`[${info.level.toUpperCase()}] : ${info.timestamp} - ${info.message}`);
 }
