@@ -10,14 +10,11 @@
 
 - [X] Write the main to-dos for the fork
 - [X] Replace non catastrophic exceptions with warnings
-- [ ] Explicitly state the video's GUID in verbose logs for ease of debugging/removing videos from the list
-- [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
-  - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
-  - [ ] If fetching metadata fails, log the full video GUID
-  - [ ] Implement retries for all actions involving external systems (Stream and/or FFMPEG)
+- [X] Store the full GUIDs for each video (just save the original GUID instead of processing it)
+- [X] Explicitly state the video's GUID in verbose logs for ease of debugging/removing videos from the list
+- [ ] Log the index of the video being downloaded so far
 - [ ] Create a structured (csv) log file to report the status of all video downloads
   - This is useful for my specific use case that involves tracking all videos that are being backed up
-  - [ ] Store the full GUIDs for each videos (new field `originalGuid` or something)
   - [ ] Possible statuses:
     - [ ] Already exists
     - [ ] Downloaded successfully
@@ -25,10 +22,15 @@
       - [ ] Video doesn't exist
       - [ ] Not enough permissions to get video
       - [ ] Video was migrated to Sharepoint (and redirects when trying to download from Stream)
+- [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
+  - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
+  - [ ] If fetching metadata fails, log the full video GUID
+  - [ ] Implement retries for all actions involving external systems (Stream and/or FFMPEG)
+- [ ] Handle client request loop (AADSTS50196) that happens after trying to refresh the token about 20 times
 - [ ] Make a Dockerfile with this tool so I don't need to worry about my environments anymore
 - [X] (Good to Have) Include current time in logs
-- [ ] (Good to Have) Persist video metadata so we don't have to wait for it to be fetched each time (this becomes really annoying when working with 100+ videos)
 - [ ] (Good to Have) Skip downloading metadata for already downloaded videos
+- [ ] (Good to Have) Persist video metadata so we don't have to wait for it to be fetched each time (this becomes really annoying when working with 100+ videos)
 
 ---
 

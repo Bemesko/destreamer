@@ -22,6 +22,8 @@
             "args": [
                 "--inputFile",
                 "video-urls.txt",
+                "--username",
+                "teste.intune@ailos.onmicrosoft.com",
                 "--keepLoginCookies",
                 "--noExperiments",
                 "--verbose",

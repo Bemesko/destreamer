@@ -92,7 +92,7 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
 
         authorEmail = response?.data['creator'].mail;
 
-        uniqueId = '#' + guid.split('-')[0];
+        uniqueId = guid;
 
         totalChunks = durationToTotalChunks(response?.data.media['duration']);
 

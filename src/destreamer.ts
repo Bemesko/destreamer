@@ -122,7 +122,7 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
 
 async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array<string>, session: Session): Promise<void> {
 
-    logger.info('Fetching videos info... \n');
+    logger.info('Fetching videos info...');
     const videos: Array<Video> = createUniquePath(
         await getVideoInfo(videoGUIDs, session, argv.closedCaptions),
         outputDirectories, argv.outputTemplate, argv.format, argv.skip
@@ -145,7 +145,7 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
     for (const [index, video] of videos.entries()) {
 
         if (argv.skip && fs.existsSync(video.outPath)) {
-            logger.info(`File already exists, skipping: ${video.outPath} \n`);
+            logger.info(`File already exists, skipping: ${video.outPath}`);
             continue;
         }
 
@@ -167,6 +167,7 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
 
         logger.info(`\nDownloading Video: ${video.title} \n`);
         logger.verbose('Extra video info \n' +
+            '\t Video GUID: '.cyan + video.uniqueId + '\n' +
             '\t Video m3u8 playlist URL: '.cyan + video.playbackUrl + '\n' +
             '\t Video tumbnail URL: '.cyan + video.posterImageUrl + '\n' +
             '\t Video subtitle URL (may not exist): '.cyan + video.captionsUrl + '\n' +
