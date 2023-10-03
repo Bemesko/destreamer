@@ -8,6 +8,7 @@ import fs from 'fs';
 import { parse as parseDuration, Duration } from 'iso8601-duration';
 import path from 'path';
 import sanitizeWindowsName from 'sanitize-filename';
+import { cacheVideoMetadata } from './MetadataCache';
 
 function publishedDateToString(date: string): string {
     const dateJs: Date = new Date(date);
@@ -88,6 +89,8 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
             logger.verbose(`Successfully retrieved metadata for video ${guid}`)
 
             currentVideo = await convertResponseToVideo(response, guid);
+
+            cacheVideoMetadata(currentVideo);
 
         }
 
