@@ -14,3 +14,4 @@ yarn.lock
 run-destreamer.ps1
 
 videoMetadata.json
+download-report.csv

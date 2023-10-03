@@ -9,6 +9,7 @@ import { parse as parseDuration, Duration } from 'iso8601-duration';
 import path from 'path';
 import sanitizeWindowsName from 'sanitize-filename';
 import { cacheVideoMetadata, getCachedVideoMetadata } from './MetadataCache';
+import { VIDEO_STATUS, reportVideoStatus } from './VideoReport';
 
 function publishedDateToString(date: string): string {
     const dateJs: Date = new Date(date);
@@ -80,6 +81,19 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
             try {
                 response = await apiClient.callApi('videos/' + guid + '?$expand=creator', 'get');
             } catch (err) {
+
+                switch (err.response.status) {
+                    case 403:
+                        reportVideoStatus(guid, VIDEO_STATUS.FORBIDDEN)
+                        break;
+                    case 404:
+                        reportVideoStatus(guid, VIDEO_STATUS.NOT_FOUND)
+                        break;
+                    default:
+                        reportVideoStatus(guid, VIDEO_STATUS.UNKNOWN_METADATA_ERROR)
+                        break;
+                }
+
                 logger.error(`Error getting metadata for video ${guid}; Response returned ${err.response.status}: ${err.response.statusText}`)
                 continue;
             }

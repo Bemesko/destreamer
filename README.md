@@ -22,10 +22,10 @@
   - [ ] Possible statuses:
     - [ ] Already exists
     - [ ] Downloaded successfully
-    - [ ] Download failed
-      - [ ] Video doesn't exist
-      - [ ] Not enough permissions to get video
-      - [ ] Video was migrated to Sharepoint (and redirects when trying to download from Stream)
+    - [X] Download failed
+      - [X] Video doesn't exist
+      - [X] Not enough permissions to get video
+      - [X] Video was migrated to Sharepoint (and redirects when trying to download from Stream)
 - [ ] Ensure exceptions are handled properly and only end the program when absolutely fatal
   - [ ] If a video download fails, log that it failed and move on with the rest instead of panicking
   - [ ] If fetching metadata fails, log the full video GUID
