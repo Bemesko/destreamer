@@ -14,6 +14,7 @@ import fs from 'fs';
 import isElevated from 'is-elevated';
 import puppeteer from 'puppeteer';
 import { ApiClient } from './ApiClient';
+import { VIDEO_STATUS, reportVideoStatus } from './VideoReport';
 
 
 const { FFmpegCommand, FFmpegInput, FFmpegOutput } = require('@tedconf/fessonia')();
@@ -148,6 +149,7 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
 
         if (argv.skip && fs.existsSync(video.outPath)) {
             logger.info(`File already exists, skipping: ${video.outPath}`);
+            reportVideoStatus(video.uniqueId, VIDEO_STATUS.ALREADY_DOWNLOADED)
             continue;
         }
 
@@ -260,12 +262,14 @@ async function downloadVideo(videoGUIDs: Array<string>, outputDirectories: Array
                 cleanupFn();
 
                 logger.error(`FFmpeg returned an error: ${error.message}`);
-                process.exit(ERROR_CODE.UNK_FFMPEG_ERROR);
+                reportVideoStatus(video.uniqueId, VIDEO_STATUS.DOWNLOAD_ERROR)
+                // process.exit(ERROR_CODE.UNK_FFMPEG_ERROR);
             });
 
             ffmpegCmd.on('success', () => {
                 pbar.update(video.totalChunks); // set progress bar to 100%
                 logger.info(`\nDownload finished: ${video.outPath} \n`);
+                reportVideoStatus(video.uniqueId, VIDEO_STATUS.DOWNLOAD_SUCCESSFUL)
                 resolve();
             });
 
