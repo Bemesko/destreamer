@@ -30,6 +30,8 @@
                 "--format",
                 "mp4",
                 "--skip",
+                "--outputTemplate",
+                "{uniqueId} - {title} - {publishDate}"
             ]
         },
         {

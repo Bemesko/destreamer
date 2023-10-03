@@ -67,19 +67,36 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
     /* TODO: change this to a single guid at a time to ease our footprint on the
     MSS servers or we get throttled after 10 sequential reqs */
     for (const guid of videoGuids) {
+        let currentVideo: Video | undefined = undefined;
+
         logger.verbose(`Try to get metadata for video ${guid}`)
 
-        let response: AxiosResponse<any> | undefined
+        // check if video has metadata in cache
+        // currentVideo = getMetadataFromCache(guid);
 
-        try {
-            response = await apiClient.callApi('videos/' + guid + '?$expand=creator', 'get');
-        } catch (err) {
-            logger.error(`Error getting metadata for video ${guid}; Response returned ${err.response.status}: ${err.response.statusText}`)
-            continue;
+        if (currentVideo === undefined) {
+            // call the api for video metadata
+            let response: AxiosResponse<any> | undefined
+
+            try {
+                response = await apiClient.callApi('videos/' + guid + '?$expand=creator', 'get');
+            } catch (err) {
+                logger.error(`Error getting metadata for video ${guid}; Response returned ${err.response.status}: ${err.response.statusText}`)
+                continue;
+            }
+
+            logger.verbose(`Successfully retrieved metadata for video ${guid}`)
+
+            currentVideo = await convertResponseToVideo(response, guid);
+
         }
 
-        logger.verbose(`Successfully retrieved metadata for video ${guid}`)
+        metadata.push(currentVideo);
+    }
 
+    return metadata;
+
+    async function convertResponseToVideo(response: AxiosResponse<any> | undefined, guid: string): Promise<Video> {
         title = sanitizeWindowsName(response?.data['name']);
 
         duration = isoDurationToString(response?.data.media['duration']);
@@ -97,14 +114,14 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
         totalChunks = durationToTotalChunks(response?.data.media['duration']);
 
         playbackUrl = response?.data['playbackUrls']
-            .filter((item: { [x: string]: string; }) =>
-                item['mimeType'] == 'application/vnd.apple.mpegurl')
-            .map((item: { [x: string]: string }) => {
+            .filter((item: { [x: string]: string; }) => item['mimeType'] == 'application/vnd.apple.mpegurl')
+            .map((item: { [x: string]: string; }) => {
                 return item['playbackUrl'];
             })[0];
 
         posterImageUrl = response?.data['posterImage']['medium']['url'];
 
+        //handle subtitles
         if (subtitles) {
             const captions: AxiosResponse<any> | undefined = await apiClient.callApi(`videos/${guid}/texttracks`, 'get');
 
@@ -123,7 +140,7 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
             }
         }
 
-        metadata.push({
+        return {
             title: title,
             duration: duration,
             publishDate: publishDate,
@@ -136,10 +153,8 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
             playbackUrl: playbackUrl,
             posterImageUrl: posterImageUrl,
             captionsUrl: captionsUrl
-        });
+        }
     }
-
-    return metadata;
 }
 
 
