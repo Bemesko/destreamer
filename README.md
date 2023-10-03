@@ -16,7 +16,7 @@
 - [X] Handle client request loop (AADSTS50196) that happens after trying to refresh the token too often
   - I sort of handled this by increasing the interval between token requests and fixing the retry logic in the refresh token function
 - [X] (Good to Have) Include current time in logs
-- [ ] Skip downloading metadata for already downloaded videos
+- [X] Skip downloading metadata for already downloaded videos
 - [ ] Create a structured (csv) log file to report the status of all video downloads
   - This is useful for my specific use case that involves tracking all videos that are being backed up
   - [ ] Possible statuses:

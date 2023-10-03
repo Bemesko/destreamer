@@ -8,7 +8,7 @@ import fs from 'fs';
 import { parse as parseDuration, Duration } from 'iso8601-duration';
 import path from 'path';
 import sanitizeWindowsName from 'sanitize-filename';
-import { cacheVideoMetadata } from './MetadataCache';
+import { cacheVideoMetadata, getCachedVideoMetadata } from './MetadataCache';
 
 function publishedDateToString(date: string): string {
     const dateJs: Date = new Date(date);
@@ -72,11 +72,9 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
 
         logger.verbose(`Try to get metadata for video ${guid}`)
 
-        // check if video has metadata in cache
-        // currentVideo = getMetadataFromCache(guid);
+        currentVideo = getCachedVideoMetadata(guid);
 
         if (currentVideo === undefined) {
-            // call the api for video metadata
             let response: AxiosResponse<any> | undefined
 
             try {
@@ -86,12 +84,10 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
                 continue;
             }
 
+            currentVideo = await convertResponseToVideo(response, guid);
             logger.verbose(`Successfully retrieved metadata for video ${guid}`)
 
-            currentVideo = await convertResponseToVideo(response, guid);
-
             cacheVideoMetadata(currentVideo);
-
         }
 
         metadata.push(currentVideo);
@@ -124,7 +120,6 @@ export async function getVideoInfo(videoGuids: Array<string>, session: Session, 
 
         posterImageUrl = response?.data['posterImage']['medium']['url'];
 
-        //handle subtitles
         if (subtitles) {
             const captions: AxiosResponse<any> | undefined = await apiClient.callApi(`videos/${guid}/texttracks`, 'get');
 

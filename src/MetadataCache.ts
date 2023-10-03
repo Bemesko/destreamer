@@ -4,10 +4,6 @@ import { logger } from './Logger';
 
 const METADATA_CACHE_FILE = 'videoMetadata.json';
 
-// export function getMetadataFromCache(videoGuid: string): Video | undefined {
-//     return undefined
-// }
-
 function readMetadataCache(): Array<Video> {
     let existingData: Array<Video> = [];
 
@@ -21,11 +17,17 @@ function readMetadataCache(): Array<Video> {
     return existingData;
 }
 
+export function getCachedVideoMetadata(videoGuid: string): Video | undefined {
+    const metadataCache = readMetadataCache()
+
+    const video = metadataCache.find(video => video.uniqueId === videoGuid)
+
+    return video;
+}
+
 export function cacheVideoMetadata(video: Video) {
     let metadataCache = readMetadataCache();
     metadataCache.push(video);
-
-    logger.debug(`Caching video metadata: ${video}`)
 
     const serializedMetadata = JSON.stringify(metadataCache, null, 2);
 
