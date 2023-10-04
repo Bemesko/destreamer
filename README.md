@@ -17,11 +17,11 @@
   - I sort of handled this by increasing the interval between token requests and fixing the retry logic in the refresh token function
 - [X] (Good to Have) Include current time in logs
 - [X] Skip downloading metadata for already downloaded videos
-- [ ] Create a structured (csv) log file to report the status of all video downloads
+- [X] Create a structured (csv) log file to report the status of all video downloads
   - This is useful for my specific use case that involves tracking all videos that are being backed up
-  - [ ] Possible statuses:
-    - [ ] Already exists
-    - [ ] Downloaded successfully
+  - [X] Possible statuses:
+    - [X] Already exists
+    - [X] Downloaded successfully
     - [X] Download failed
       - [X] Video doesn't exist
       - [X] Not enough permissions to get video
